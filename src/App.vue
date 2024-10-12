@@ -77,8 +77,9 @@ button {
 button:hover {
   transform: scale(1.1) translateY(-5px);
 }
+
 .button_gen {
-  background: rgb(30, 128, 17);
+  background: rgb(255, 255, 255);
   color: white;
   border-radius: 10px;
   border: 2px solid rgb(18, 77, 10);
