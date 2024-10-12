@@ -3,12 +3,25 @@
     <div class="wrapper">
       <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" />
     </div>
-    <div class="wrapper_gen"></div>
+    <div class="wrapper_gen">
+      <h1>Что AI опделелил и с чем дальше работать будет</h1>
+    </div>
   </div>
+
   <button @click="openFileDialog" class="button">Выбрать фото</button>
   <button class="button">Редактировать фото</button>
   <button class="button_gen">Генерация объекта</button>
   <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" />
+
+  <div class="wrapper-container">
+    <div class="wrapper">
+      <h1>Здесь будет 3D модель</h1>
+    </div>
+    <div class="wrapper_gen">
+      <h1>Здась тоже что то типо того</h1>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -60,6 +73,8 @@ export default {
   border-radius: 20px;
   background: rgb(240, 230, 213);
   margin: 0 20px;
+  justify-content: center;
+  align-items: center;
   display: flex;
 }
 button {
@@ -79,7 +94,7 @@ button:hover {
 }
 
 .button_gen {
-  background: rgb(255, 255, 255);
+  background: rgb(30, 128, 17);
   color: white;
   border-radius: 10px;
   border: 2px solid rgb(18, 77, 10);
