@@ -43,6 +43,7 @@ export default {
     },
   },
 };
+
 </script>
 
 <style scoped>
@@ -92,7 +93,6 @@ button {
 button:hover {
   transform: scale(1.1) translateY(-5px);
 }
-
 .button_gen {
   background: rgb(30, 128, 17);
   color: white;
