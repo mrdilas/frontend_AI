@@ -1,24 +1,38 @@
 <template>
+
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
   <div class="wrapper-container">
     <div class="wrapper">
-      <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" />
+      <div>
+
+        <img v-if="photo" className="img_file" src="https://icons.iconarchive.com/icons/icons8/windows-8/128/Files-Word-icon.png" width="150" height="150">
+        <h1 v-if="photo" className="pacifico-regular">Вставьте <br >
+                                                      изображение</h1>
+        <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" />
+
+      </div>
     </div>
     <div class="wrapper_gen">
-      <h1>Что AI опделелил и с чем дальше работать будет</h1>
+      <h1 className="pacifico-regular"> Что AI опделелил <br >
+                                        и с чем дальше работать будет
+      </h1>
     </div>
   </div>
 
   <button @click="openFileDialog" class="button">Выбрать фото</button>
   <button class="button">Редактировать фото</button>
-  <button class="button_gen">Генерация объекта</button>
+  <button className="button_gen">Генерация объекта</button>
   <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" />
 
   <div class="wrapper-container">
     <div class="wrapper">
-      <h1>Здесь будет 3D модель</h1>
+      
+      <h1 className="pacifico-regular"> Здесь будет <br >
+                                        3D модель</h1>
     </div>
     <div class="wrapper_gen">
-      <h1>Здась тоже что то типо того</h1>
+      <h1 className="pacifico-regular">Здась тоже что то типо того</h1>
     </div>
   </div>
 
@@ -29,6 +43,7 @@ export default {
   data() {
     return {
       imageUrl: null,
+      photo: true,
     };
   },
   methods: {
@@ -39,6 +54,7 @@ export default {
       const file = event.target.files[0];
       if (file) {
         this.imageUrl = URL.createObjectURL(file);
+        this.photo = false;
       }
     },
   },
@@ -108,6 +124,19 @@ button:hover {
 .button_gen:hover {
   transform: scale(1.1) translateY(-5px);
 }
+
+.img_file {
+  opacity: 0.2;
+  display: block;
+  margin: 0 auto; /* Убирает отступы */
+}
+
+.pacifico-regular {
+  font-family: "Pacifico", cursive;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  font-size: 45px;
+  opacity: 0.3;
+}
 </style>
-<!--behehe xdddd-->
-<!--q-->
