@@ -1,5 +1,5 @@
 <template>
-
+  
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
   <div class="wrapper-container">
@@ -62,7 +62,7 @@ export default {
     openFileDialog() {
       this.$refs.fileInput.click();
     },
-
+    
     //___________________функция для проверки выбранного файла____________________
     handleFileChange(event) {
       const file = event.target.files[0];
