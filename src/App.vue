@@ -6,31 +6,46 @@
     <div class="wrapper">
       <div>
         <img v-if="photo" className="img_file" src="https://icons.iconarchive.com/icons/icons8/windows-8/128/Files-Word-icon.png" width="150" height="150">
-        <h1 v-if="photo" className="pacifico-regular">Вставьте <br >
-                                                      изображение</h1>
+        <h1 v-if="photo" className="pacifico-regular">
+          Вставьте <br >
+          изображение
+        </h1>
         <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" />
       </div>
     </div>
     <div class="wrapper_gen">
-      <h1 className="pacifico-regular"> Что AI опделелил <br >
-                                        и с чем дальше работать будет
+      <h1 className="pacifico-regular"> 
+        Что AI опделелил <br >
+        и с чем дальше работать будет
       </h1>
     </div>
   </div>
 
-  <button @click="openFileDialog" class="button">Выбрать фото</button>
-  <button class="button">Редактировать фото</button>
-  <button className="button_gen">Генерация объекта</button>
+  <button @click="openFileDialog" class="button">
+    Выбрать фото
+  </button>
+
+  <button class="button">
+    Редактировать фото
+  </button>
+
+  <button className="button_gen">
+    Генерация объекта
+  </button>
+
   <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" />
 
   <div class="wrapper-container">
     <div class="wrapper">
       
-      <h1 className="pacifico-regular"> Здесь будет <br >
-                                        3D модель</h1>
+      <h1 className="pacifico-regular"> 
+        Здесь будет <br >
+        3D модель</h1>
     </div>
     <div class="wrapper_gen">
-      <h1 className="pacifico-regular">Здась тоже что то типо того</h1>
+      <h1 className="pacifico-regular">
+        Здась тоже что то типо того
+      </h1>
     </div>
   </div>
 </template>
