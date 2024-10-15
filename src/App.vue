@@ -72,6 +72,7 @@ export default {
 <style scoped>
 .wrapper-container {
   display: flex;
+  pointer-events: none;
   justify-content: center;
   margin-top: 20px;
 }
