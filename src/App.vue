@@ -2,11 +2,11 @@
   
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
-  <div class="wrapper-container">
-    <div class="wrapper">
+  <div className="wrapper-container">
+    <div className="wrapper">
       <div>
-        <img v-if="photo" className="img_file" src="https://icons.iconarchive.com/icons/icons8/windows-8/128/Files-Word-icon.png" width="150" height="150">
-        <h1 v-if="photo" className="pacifico-regular">
+        <img v-if="isItDefaultPhoto == true" className="img_file" :src = "imageDefaultUrl" width="150" height="150">
+        <h1 v-if="isItDefaultPhoto == true" className="pacifico-regular">
           Вставьте <br >
           изображение
         </h1>
@@ -29,7 +29,7 @@
     Редактировать фото
   </button>
 
-  <button className="button_gen">
+  <button className="button_gen" :disabled="isItDefaultPhoto == true">
     Генерация объекта
   </button>
 
@@ -50,12 +50,17 @@
   </div>
 </template>
 
+
+
+
+
 <script>
 export default {
   data() {
     return {
+      imageDefaultUrl: "https://icons.iconarchive.com/icons/icons8/windows-8/128/Files-Word-icon.png",
       imageUrl: '',
-      photo: true,
+      isItDefaultPhoto: true,
     };
   },
   methods: {
@@ -73,7 +78,7 @@ export default {
         const reader = new FileReader();
         reader.onload = (e) => {
           this.imageUrl = e.target.result;
-          this.photo = false;
+          this.isItDefaultPhoto = false;
         };
         reader.readAsDataURL(file);
       } else {
@@ -146,6 +151,10 @@ button:hover {
 }
 .button_gen:hover {
   transform: scale(1.1) translateY(-5px);
+}
+.button_gen:disabled {
+  background-color: gray;
+  cursor: not-allowed;
 }
 
 .img_file {
