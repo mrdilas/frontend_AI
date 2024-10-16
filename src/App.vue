@@ -10,6 +10,9 @@
           Вставьте <br >
           изображение
         </h1>
+        <!--button v-if="isItDefaultPhoto == false" className = "button_close_image">
+            <img :src = "imageClose" height="10px" width="10px" color="black">
+        </button-->
         <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" />
       </div>
     </div>
@@ -50,7 +53,8 @@
     </div>
     <div class="wrapper_gen">
       <h1 className="pacifico-regular">
-        Здась тоже что то типо того
+        Модель, интегрированная <br>
+        в окружение
       </h1>
     </div>
   </div>
@@ -64,6 +68,7 @@ export default {
     return {
       imageDefaultUrl: "https://icons.iconarchive.com/icons/icons8/windows-8/128/Files-Word-icon.png",
       imageUrl: '',
+      imageClose: 'https://icons.iconarchive.com/icons/custom-icon-design/mono-general-1/128/delete-icon.png',
       isItDefaultPhoto: true,
     };
   },
@@ -133,6 +138,7 @@ export default {
   align-items: center;
   display: flex;
 }
+
 button {
   background: rgb(241, 173, 46);
   color: white;
@@ -148,6 +154,16 @@ button {
 button:hover {
   transform: scale(1.1) translateY(-5px);
 }
+
+.button_close_image {
+  height: 10px;
+  width: 10px;
+  border-color: black;
+  background-color: white;
+  float: right;
+  cursor: pointer;
+}
+
 .button_gen {
   background: rgb(30, 128, 17);
   color: white;
@@ -164,6 +180,8 @@ button:hover {
 .button_gen:disabled {
   background-color: gray;
   cursor: not-allowed;
+  opacity: 0.2;
+  transform: scale(1) translateY(0px);
 }
 
 .button_delete {
