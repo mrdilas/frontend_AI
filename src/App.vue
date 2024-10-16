@@ -76,7 +76,7 @@ export default {
     handleFileChange() {
       const file = event.target.files[0];
       // Поддерживаемые форматы изображений
-      const supportedFormats = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+      const supportedFormats = ['image/jpeg', 'image/png', 'image/bmp', 'image/webp'];
       // Проверка типа файла
       if (file && supportedFormats.includes(file.type)) {
         const reader = new FileReader();
@@ -86,7 +86,7 @@ export default {
         };
         reader.readAsDataURL(file);
       } else {
-        alert('Пожалуйста, выберите изображение в формате JPEG, PNG, GIF, BMP или WEBP.');
+        alert('Пожалуйста, выберите изображение в формате JPEG, PNG, BMP или WEBP.');
       }
     },
     //___________________функция для удаления картинки из imageUrl____________________
