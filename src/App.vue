@@ -10,9 +10,6 @@
           Вставьте <br >
           изображение
         </h1>
-        <!--button v-if="isItDefaultPhoto == false" className = "button_close_image">
-            <img :src = "imageClose" height="10px" width="10px" color="black">
-        </button-->
         <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" />
       </div>
     </div>
