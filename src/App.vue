@@ -1,28 +1,31 @@
 <template>
   
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link :href = "fontDefaultUrl" rel="stylesheet">
 
   <div className="wrapper-container">
     <div className="wrapper">
-      <div>
-        <img v-if="isItDefaultPhoto == true" className="img_file" :src = "imageDefaultUrl" width="150" height="150">
-        <h1 v-if="isItDefaultPhoto == true" className="pacifico-regular">
-          Вставьте <br >
+      <div className="image-container">
+        <img v-if="isItDefaultPhoto" :src = "imageDefaultUrl" width="150" height="150" :style= "opacityFile">
+        <h1 v-if="isItDefaultPhoto" className="pacifico-regular">
+          Добавьте <br >
           изображение
         </h1>
-        <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" />
+        <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" className="uploaded-image"/>
       </div>
     </div>
-    <div class="wrapper_gen">
+
+    <div className="wrapper_gen">
       <h1 className="pacifico-regular"> 
         Что AI опделелил <br >
         и с чем дальше работать будет
       </h1>
     </div>
   </div>
-
-  <div className="wrapper_button">
-    <button @click="openFileDialog" class="button">
+  
+  <input type="file" ref="fileInput" @change="handleFileChange" style="display:none;" />
+  
+  <div>
+    <button @click="openFileDialog" className="button">
       Выбрать фото
     </button>
 
@@ -30,7 +33,7 @@
       Удалить фото
     </button>
 
-    <button class="button">
+    <button @click="" className="button" :disabled="isItDefaultPhoto == true"> 
       Редактировать фото
     </button>
   
@@ -38,8 +41,6 @@
       Генерация объекта
     </button>
   </div>
-
-  <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" />
 
   <div class="wrapper-container">
     <div class="wrapper">
@@ -63,19 +64,23 @@
 export default {
   data() {
     return {
-      imageDefaultUrl: "https://icons.iconarchive.com/icons/icons8/windows-8/128/Files-Word-icon.png",
+      imageDefaultUrl: "https://icons.iconarchive.com/icons/icons8/windows-8/128/Files-Word-icon.png", //ссылка на иконку файла
+      fontDefaultUrl: "https://fonts.googleapis.com/css2?family=Pacifico&display=swap", // ссылка на шрифт для текста
       imageUrl: '',
+      isItDefaultPhoto: true, // если нет фотографии выводится иконка и текст в первом контейнере 
+      opacityFile: { opacity: 0.2 }, //прозрачность для иконки
       imageClose: 'https://icons.iconarchive.com/icons/custom-icon-design/mono-general-1/128/delete-icon.png',
       isItDefaultPhoto: true,
     };
   },
   methods: {
+    // функция для выбора картинки
     openFileDialog() {
       this.$refs.fileInput.click();
     },
     
-    //___________________функция для добавление в imageUrl выбранного файла____________________
-    handleFileChange() {
+    // функция для добавление в imageUrl выбранной картинки
+    handleFileChange(event) {
       const file = event.target.files[0];
       // Поддерживаемые форматы изображений
       const supportedFormats = ['image/jpeg', 'image/png', 'image/bmp', 'image/webp'];
@@ -91,18 +96,20 @@ export default {
         alert('Пожалуйста, выберите изображение в формате JPEG, PNG, BMP или WEBP.');
       }
     },
-    //___________________функция для удаления картинки из imageUrl____________________
+
+    // функция для удаления картинки из imageUrl
     deleteFileChange() {
       this.imageUrl = '';
       this.isItDefaultPhoto = true;
       this.$refs.fileInput.value = ''; // Сбрасываем значение input, чтобы можно было заново выбрать тот же файл
     },
-
   },
 };
 </script>
 
 <style scoped>
+/* тут нахуй без комментариев, я сам уже не шарю
+  что где, ищите по наитию */
 .wrapper-container {
   display: flex;
   pointer-events: none;
@@ -110,21 +117,37 @@ export default {
   margin-top: 20px;
 }
 .wrapper {
-  width: 900px;
-  height: 500px;
+  width: 900px; /* 900px */
+  height: 500px; /* 500px*/
   border-radius: 20px;
   background: rgb(240, 230, 213);
   margin: 0 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow: hidden; /* Обрезаем все, что выходит за пределы контейнера */
+  object-fit: contain;  /* Сохраняем пропорции изображений */
 }
-.wrapper img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+
+.image-container {
+  width: 100%; /* Полная ширина контейнер с изображением */
+  height: 100%; /* Полная высота контейнера с изображением */
+  display: flex; /* Используем Flexbox для центрального выравнивания */
+  justify-content: center; /* Центрируем содержимое по горизонтали */
+  align-items: center; /* Центрируем содержимое по вертикали */
+  overflow: hidden; /* Скрываем все, что выходит за пределы */
+} 
+
+.img_file { /* Стили для всех изображений в .wrapper */
+  width: 150px; /* Ширина изображения не больше ширины родителя */
+  height: 150px; /* Высота изображения не больше высоты родителя */
 }
+.uploaded-image {
+  max-width: 100%;     /* Ширина для загруженных изображений не больше ширины родителя */
+  max-height: 100%;    /* Высота для загруженных изображений не больше высоты родителя */
+  object-fit: contain;  /* Сохраняем пропорции изображений */
+}
+
 .wrapper_gen {
   width: 900px;
   height: 500px;
@@ -152,6 +175,12 @@ button:hover {
   transform: scale(1.1) translateY(-5px);
 }
 
+
+.button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
 .button_close_image {
   height: 10px;
   width: 10px;
@@ -159,6 +188,7 @@ button:hover {
   background-color: white;
   float: right;
   cursor: pointer;
+
 }
 
 .button_gen {
@@ -201,16 +231,16 @@ button:hover {
   cursor: not-allowed;
 }
 
-.wrapper-button {
-  display: flex;
-  justify-content: flex-start; /* Выравнивание остальных кнопок по левому краю */
-  align-items: center; /* Центрируем кнопки по вертикали */
+.image-container {
+  width: 100%; /* Полная ширина контейнер с изображением */
+  height: 100%; /* Полная высота контейнера с изображением */
+  display: flex; /* Используем Flexbox для центрального выравнивания */
+  justify-content: center; /* Центрируем содержимое по горизонтали */
+  align-items: center; /* Центрируем содержимое по вертикали */
+  overflow: hidden; /* Скрываем все, что выходит за пределы */
 }
-
 .img_file {
   opacity: 0.2;
-  display: block;
-  margin: 0 auto; /* Убирает отступы */
 }
 
 .pacifico-regular {
@@ -221,5 +251,6 @@ button:hover {
   font-size: 45px;
   opacity: 0.3;
 }
+
 </style>
 
