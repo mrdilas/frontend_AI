@@ -179,6 +179,8 @@ button:hover {
 .button:disabled {
   background-color: gray;
   cursor: not-allowed;
+  opacity: 0.2;
+  transform: scale(1) translateY(0px);
 }
 
 .button_close_image {
@@ -228,6 +230,8 @@ button:hover {
 .button_delete:disabled {
   background-color: gray;
   cursor: not-allowed;
+  opacity: 0.2;
+  transform: scale(1) translateY(0px);
 }
 
 .image-container {
