@@ -188,7 +188,6 @@ button:hover {
   background-color: white;
   float: right;
   cursor: pointer;
-
 }
 
 .button_gen {
