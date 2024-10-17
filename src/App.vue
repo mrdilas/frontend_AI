@@ -42,14 +42,14 @@
     </button>
   </div>
 
-  <div class="wrapper-container">
-    <div class="wrapper">
+  <div className="wrapper-container">
+    <div className="wrapper">
       
       <h1 className="pacifico-regular"> 
         Здесь будет <br >
         3D модель</h1>
     </div>
-    <div class="wrapper_gen">
+    <div className="wrapper_gen">
       <h1 className="pacifico-regular">
         Модель, интегрированная <br>
         в окружение
@@ -93,7 +93,7 @@ export default {
         };
         reader.readAsDataURL(file);
       } else {
-        alert('Пожалуйста, выберите изображение в формате JPEG, PNG, BMP или WEBP.');
+            alert('Пожалуйста, выберите изображение в формате JPEG, PNG, BMP или WEBP.');
       }
     },
 
@@ -179,6 +179,8 @@ button:hover {
 .button:disabled {
   background-color: gray;
   cursor: not-allowed;
+  opacity: 0.2;
+  transform: scale(1) translateY(0px);
 }
 
 .button_close_image {
@@ -229,6 +231,8 @@ button:hover {
 .button_delete:disabled {
   background-color: gray;
   cursor: not-allowed;
+  opacity: 0.2;
+  transform: scale(1) translateY(0px);
 }
 
 .image-container {
