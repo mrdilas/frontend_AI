@@ -1,56 +1,59 @@
 <template>
-  
-  <link :href = "fontDefaultUrl" rel="stylesheet">
+  <link :href="fontDefaultUrl" rel="stylesheet">
 
-  <div className="wrapper-container">
-    <div className="wrapper">
-      <div className="image-container">
-        <img v-if="isItDefaultPhoto" :src = "imageDefaultUrl" width="150" height="150" :style= "opacityFile">
-        <h1 v-if="isItDefaultPhoto" className="pacifico-regular">
-          Добавьте <br >
+  <div class="wrapper-container">
+    <div class="wrapper">
+      <div class="image-container">
+        <img v-if="isItDefaultPhoto" :src="imageDefaultUrl" width="150" height="150" :style="opacityFile">
+        <h1 v-if="isItDefaultPhoto" class="pacifico-regular">
+          Добавьте <br>
           изображение
         </h1>
-        <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" className="uploaded-image"/>
+        <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" class="uploaded-image"/>
       </div>
     </div>
 
-    <div className="wrapper_gen">
-      <h1 className="pacifico-regular"> 
-        Что AI опделелил <br >
-        и с чем дальше работать будет
-      </h1>
+    <div class="wrapper_gen">
+      <div class="image-container">
+        <img v-if="generatedImageUrl" :src="generatedImageUrl" alt="Generated Image" />
+
+        <h1 v-if="isItGeneratedPhoto" class="pacifico-regular"> 
+          Что AI определил <br>
+          и с чем дальше работать будет
+        </h1>
+      </div>
     </div>
   </div>
   
   <input type="file" ref="fileInput" @change="handleFileChange" style="display:none;" />
   
   <div>
-    <button @click="openFileDialog" className="button">
+    <button @click="openFileDialog" class="button">
       Выбрать фото
     </button>
 
-    <button @click="deleteFileChange" className="button_delete" :disabled="isItDefaultPhoto == true">
+    <button @click="deleteFileChange" class="button_delete" :disabled="isItDefaultPhoto">
       Удалить фото
     </button>
 
-    <button @click="" className="button" :disabled="isItDefaultPhoto == true"> 
+    <button @click="editPhoto" class="button" :disabled="isItDefaultPhoto"> 
       Редактировать фото
     </button>
   
-    <button className="button_gen" :disabled="isItDefaultPhoto == true">
+    <button @click="uploadFile" class="button_gen" :disabled="isItDefaultPhoto">
       Генерация объекта
     </button>
   </div>
 
   <div class="wrapper-container">
     <div class="wrapper">
-      
-      <h1 className="pacifico-regular"> 
-        Здесь будет <br >
-        3D модель</h1>
+      <h1 class="pacifico-regular"> 
+        Здесь будет <br>
+        3D модель
+      </h1>
     </div>
     <div class="wrapper_gen">
-      <h1 className="pacifico-regular">
+      <h1 class="pacifico-regular">
         Модель, интегрированная <br>
         в окружение
       </h1>
@@ -58,38 +61,37 @@
   </div>
 </template>
 
-
-
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      imageDefaultUrl: "https://icons.iconarchive.com/icons/icons8/windows-8/128/Files-Word-icon.png", //ссылка на иконку файла
-      fontDefaultUrl: "https://fonts.googleapis.com/css2?family=Pacifico&display=swap", // ссылка на шрифт для текста
+      imageDefaultUrl: "https://icons.iconarchive.com/icons/icons8/windows-8/128/Files-Word-icon.png",
+      fontDefaultUrl: "https://fonts.googleapis.com/css2?family=Pacifico&display=swap",
       imageUrl: '',
-      isItDefaultPhoto: true, // если нет фотографии выводится иконка и текст в первом контейнере 
-      opacityFile: { opacity: 0.2 }, //прозрачность для иконки
-      imageClose: 'https://icons.iconarchive.com/icons/custom-icon-design/mono-general-1/128/delete-icon.png',
+      generatedImageUrl: '', // Теперь есть отдельный URL для сгенерированного изображения
       isItDefaultPhoto: true,
+      isItGeneratedPhoto: true,
+      opacityFile: { opacity: 0.2 },
+      selectedFile: null,
     };
   },
   methods: {
-    // функция для выбора картинки
     openFileDialog() {
       this.$refs.fileInput.click();
     },
-    
-    // функция для добавление в imageUrl выбранной картинки
+
     handleFileChange(event) {
       const file = event.target.files[0];
-      // Поддерживаемые форматы изображений
       const supportedFormats = ['image/jpeg', 'image/png', 'image/bmp', 'image/webp'];
-      // Проверка типа файла
+
       if (file && supportedFormats.includes(file.type)) {
         const reader = new FileReader();
         reader.onload = (e) => {
           this.imageUrl = e.target.result;
           this.isItDefaultPhoto = false;
+          this.selectedFile = file; // Сохраняем выбранный файл для отправки на сервер
         };
         reader.readAsDataURL(file);
       } else {
@@ -97,13 +99,41 @@ export default {
       }
     },
 
-    // функция для удаления картинки из imageUrl
     deleteFileChange() {
       this.imageUrl = '';
       this.isItDefaultPhoto = true;
-      this.$refs.fileInput.value = ''; // Сбрасываем значение input, чтобы можно было заново выбрать тот же файл
+      this.selectedFile = null; // Сбрасываем выбранный файл
+      this.$refs.fileInput.value = ''; // Сбрасываем значение input
     },
-  },
+
+    async uploadFile() {
+      isItGeneratedPhoto = false;
+      if (!this.selectedFile) {
+        alert('Пожалуйста, выберите файл перед загрузкой.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', this.selectedFile);
+      
+      try {
+        const response = await axios.post('http://localhost:8000/segment', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        this.generatedImageUrl = URL.createObjectURL(response.data); // Если сервер возвращает изображение
+        this.isItGeneratedPhoto = true; // Установите флаг, если изображение сгенерировано
+      } catch (error) {
+        console.error('Ошибка при загрузке файла:', error);
+      }
+    },
+
+    editPhoto() {
+      // Логика для редактирования фото (можно добавить позже)
+    }
+  }
 };
 </script>
 
