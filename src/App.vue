@@ -12,31 +12,24 @@
         Upload Image
       </button>
 
-      <input type="file" ref="fileInput" @change="uploadImage" accept="image/*" class="uploadInput" style="display: none;" />
+      <input type="file" ref="fileInput" @change="uploadImage" id="imageInput" accept="image/*" class="uploadInput" style="display: none;" />
     </div>
 
     <div class="workArea">
       <h1 v-if="!segmentedImageURL">Segmented Image</h1>
-      <img :src="segmentedImageURL"/>
+      <img v-if="segmentedImageURL" id="segmentedImage" class="uploadedImage" :src="segmentedImageURL"/>
     </div>
   </div>
   
   <div class="row">
     <button class="startButton" @click="sendImageToAPI" :disabled="!uploadedImageURL">
-    Start
+      Start
     </button>
   </div>
 
   <div class="row">
-
-    <div class="workArea">
-
-    </div>  
-
-    <div class="workArea">
-
-    </div>
-
+    <div class="workArea"></div>  
+    <div class="workArea"></div>
   </div>
 </template>
 
@@ -104,28 +97,35 @@ export default {
       this.$refs.fileInput.value = null; 
     },
     sendImageToAPI() {
-      const base64Image = this.uploadedImageURL.split(',')[1];
-      const byteCharacters = atob(base64Image);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
+      const apiURL = "http://localhost:8000/segment"; // URL вашего сервера
+      const formData = new FormData(); // Создание FormData для отправки файла
+
+      const fileInput = this.$refs.fileInput;
+      const file = fileInput.files[0];
+
+      // Проверяем, был ли выбран файл
+      if (!file) {
+        console.error("No file selected");
+        return;
       }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], {type: 'image/jpeg'});
-
-      const formData = new FormData();
-      formData.append('file', blob, 'test_image.jpg');
-
-      const apiURL = "http://localhost:8000/segment";
+      
+      formData.append("image", file); // Добавление файла в данные формы
 
       fetch(apiURL, {
         method: 'POST',
-        body: formData
+        body: formData // Отправка FormData
       })
-      .then(response => response.json())
-      .then(data => {
-        // Предполагаем, что API возвращает URL сегментированного изображения
-        this.segmentedImageURL = data.segmentedImageUrl; // Измените в соответствии с вашим ответом от API
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(errorData => {
+            throw new Error('Error: ' + errorData.detail);
+          });
+        }
+        return response.blob(); // Получаем Blob
+      })
+      .then(blob => {
+        const segmentedImageUrl = URL.createObjectURL(blob);
+        this.segmentedImageURL = segmentedImageUrl; // Сохранение URL сегментированного изображения
       })
       .catch(error => {
         console.error('Error sending image to API:', error);
@@ -134,6 +134,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
 
