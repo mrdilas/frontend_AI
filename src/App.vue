@@ -5,9 +5,7 @@
               class="closeButton" @click="deleteImage">&#10006;</button>
       
       <img v-if="isItDefaultImage" class="defaultImage" :src="defaultImageURL" alt="Default Image">
-      <h1 v-if="isItDefaultImage">
-        Import image
-      </h1>
+      <h1 v-if="isItDefaultImage">Import image</h1>
       <img v-else class="uploadedImage" :src="uploadedImageURL">
 
       <button class="uploadButton" @click="triggerFileInput">
@@ -18,10 +16,11 @@
     </div>
 
     <div class="workArea">
-
+      <h1 v-if="!segmentedImageURL">Segmented Image</h1>
+      <img :src="segmentedImageURL"/>
     </div>
-
   </div>
+  
   <div class="row">
     <button class="startButton" @click="sendImageToAPI" :disabled="!uploadedImageURL">
     Start
@@ -41,15 +40,15 @@
   </div>
 </template>
 
-
 <script>
 export default {
   data() {
     return {
       defaultImageURL: "https://icons.iconarchive.com/icons/icons8/windows-8/128/Files-Word-icon.png",
       uploadedImageURL: "",
+      segmentedImageURL: "", // Для хранения URL сегментированного изображения
       isItDefaultImage: true,
-      buttonColor: 'black' // херь, чтоб кнопка меняла цвет
+      buttonColor: 'black'
     }
   },
   methods: {
@@ -62,7 +61,7 @@ export default {
       reader.onload = (e) => {
         this.uploadedImageURL = e.target.result;
         this.isItDefaultImage = false;
-        this.determineButtonColor(e.target.result); // изменение цвета кнопки
+        this.determineButtonColor(e.target.result);
       };
       if (file) {
         reader.readAsDataURL(file);
@@ -81,7 +80,6 @@ export default {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
 
-        // вычисление средней яркости
         let r = 0, g = 0, b = 0;
         const pixelCount = data.length / 4;
         for (let i = 0; i < data.length; i += 4) {
@@ -94,41 +92,43 @@ export default {
         g /= pixelCount;
         b /= pixelCount;
         
-        // формула яркости
         const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-        // изменение цвета кнопки через тернарник
         this.buttonColor = brightness < 0.5 ? 'white' : 'black';
       };
     },
     deleteImage() {
       this.uploadedImageURL = "";
+      this.segmentedImageURL = ""; // Сброс сегментированного изображения
       this.isItDefaultImage = true;
-      this.buttonColor = 'black'; // сброс цвета кнопки
+      this.buttonColor = 'black';
       this.$refs.fileInput.value = null; 
     },
     sendImageToAPI() {
-      // Извлекаем base64 строку изображения
       const base64Image = this.uploadedImageURL.split(',')[1];
+      const byteCharacters = atob(base64Image);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {type: 'image/jpeg'});
 
-      // Настройка API URL
-      const apiURL = "https://example.com/upload"; // Замените на ваш URL API
+      const formData = new FormData();
+      formData.append('file', blob, 'test_image.jpg');
+
+      const apiURL = "http://localhost:8000/segment";
 
       fetch(apiURL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ image: base64Image }), // Передать изображение в формат json
+        body: formData
       })
       .then(response => response.json())
       .then(data => {
-        console.log('Success:', data);
-        alert('Image successfully uploaded!');
+        // Предполагаем, что API возвращает URL сегментированного изображения
+        this.segmentedImageURL = data.segmentedImageUrl; // Измените в соответствии с вашим ответом от API
       })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert('Error uploading image.');
+      .catch(error => {
+        console.error('Error sending image to API:', error);
       });
     }
   }
@@ -225,7 +225,7 @@ export default {
 }
 .startButton {
   height: 50px;
-  width: 100px;
+  width: 200px;
   border: none;
   font-size: 20px;
   border-radius: 16px;
